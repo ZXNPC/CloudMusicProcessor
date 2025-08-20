@@ -1,0 +1,4 @@
+# CloudMusicProcessor 依赖
+# 需要手动下载 ncmdump
+
+ncmdump>=1.5.0
