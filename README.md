@@ -4,77 +4,117 @@
 
 > 🤖 本项目由 [DeepSeek](https://www.deepseek.com) AI 辅助生成
 
-## 🚀 功能特性
+## 🎯 解决痛点
 
-- ✅ 自动转换NCM格式为普通音频格式
-- ✅ 文件去重和智能移动
-- ✅ 自动备份到指定目录
-- ✅ 创建符号链接保持文件访问
-- ✅ 支持多次运行，智能跳过已处理文件
+**你是否遇到这样的问题？**
+- 🎵 想要将网易云音乐下载到NAS进行备份和集中管理
+- 🔄 但又担心移动文件后，网易云客户端会重新下载已处理过的文件
+- 💾 需要在本地保留访问权限，同时实现NAS备份
+
+**CloudMusic Processor 完美解决这个问题！**
+
+通过智能的符号链接技术，本脚本让您可以：
+- ✅ **安全备份**: 将转换后的音乐文件自动移动到NAS
+- ✅ **无缝访问**: 在本地目录创建符号链接，网易云客户端无感知
+- ✅ **避免重复**: 防止网易云重复下载已处理的VIP歌曲
+- ✅ **双重保障**: 既享受NAS存储优势，又保持本地使用体验
+
+## 🚀 核心功能
+
+- 🔄 **自动转换**: 批量处理NCM格式为通用音频格式
+- 📦 **智能备份**: 自动移动文件到NAS指定目录
+- 🔗 **符号链接**: 在本地创建透明访问链接
+- ⚡ **去重保护**: 智能跳过已处理文件，避免重复操作
+- 🛡️ **错误恢复**: 完善的错误处理和日志记录
 
 ## 📦 所需工具
 
-- [ncmdump](https://github.com/yoki123/ncmdump) - NCM文件转换工具
+- [ncmdump](https://github.com/taurusxin/ncmdump) - NCM文件转换工具（推荐使用此版本）
 - Windows系统（支持符号链接）
+- NAS网络存储设备（可选，但推荐）
 
 ## ⚙️ 安装配置
 
 1. **下载ncmdump**
    ```bash
    # 从GitHub下载最新版ncmdump
-   # 或使用包管理器
-   scoop install ncmdump
+   # 推荐使用: https://github.com/taurusxin/ncmdump
+   # 下载后放置到指定目录
    ```
 
-2. **配置路径**
-   - 复制 `config_example.bat` 为 `config.bat`
-   - 修改配置文件中的路径为您的实际路径
+2. **配置NAS路径**
+   ```bat
+   REM 在 config.bat 中设置NAS备份路径
+   set "BACKUP_DIR=\\你的NAS\音乐库\网易云音乐"
+   ```
 
-3. **运行脚本**
+3. **配置ncmdump路径**
+   ```bat
+   set "NCMDump_PATH=D:\Tools\ncmdump.exe"
+   ```
+
+4. **运行脚本**
    ```cmd
    CloudMusicProcessor.bat
    ```
 
+## 🏗️ 工作原理
+
+```
+网易云下载 → NCM文件 → 转换处理 → 移动至NAS → 创建符号链接 → 本地无感访问
+```
+
+**优势对比**：
+| 方案       | NAS备份 | 本地访问 | 避免重复下载 |
+| ---------- | ------- | -------- | ------------ |
+| 直接移动   | ✅       | ❌        | ❌            |
+| 手动复制   | ✅       | ✅        | ❌            |
+| **本脚本** | ✅       | ✅        | ✅            |
+
 ## 🛠️ 配置文件说明
 
-编辑 `config.bat`：
+编辑 `config.bat` 设置相关路径：
 
 ```bat
+REM ncmdump工具路径（必需）
 set "NCMDump_PATH=D:\Tools\ncmdump.exe"
+
+REM NAS网络路径（推荐）
+set "BACKUP_DIR=\\NAS_IP\Music\CloudMusic"
+
+REM 本地工作目录
 set "SOURCE_DIR=D:\CloudMusic"
-set "VIP_SONGS_DIR=D:\CloudMusic\VipSongs"
-set "BACKUP_DIR=E:\MusicBackup"
+set "VIP_SONGS_DIR=D:\CloudMusic\VipSongsDownload"
 ```
 
 ## 📋 使用流程
 
-1. 在网易云音乐下载VIP歌曲到 `VIP_SONGS_DIR`
-2. 运行本脚本
-3. 脚本会自动：
-   - 转换NCM文件
-   - 备份到指定目录
-   - 创建符号链接
+1. 从 [ncmdump](https://github.com/taurusxin/ncmdump) 下载转换工具
+2. 网易云音乐下载VIP歌曲到指定目录
+3. 配置脚本路径参数
+4. 运行本脚本一次处理所有文件
+5. 享受：
+   - 🎵 NAS上的安全音乐备份
+   - 💻 本地目录的无缝访问
+   - 🔄 避免网易云重复下载的烦恼
 
 ## ❓ 常见问题
 
-**Q: 需要管理员权限吗？**  
-A: 只有在创建符号链接时需要管理员权限。
+**Q: 在哪里下载ncmdump？**  
+A: 推荐使用 [taurusxin/ncmdump](https://github.com/taurusxin/ncmdump)，该版本维护较好。
 
-**Q: 支持哪些音频格式？**  
-A: 取决于ncmdump，通常支持mp3、flac等格式。
+**Q: 符号链接会影响网易云客户端的正常使用吗？**  
+A: 完全不会！符号链接对应用程序是透明的，网易云客户端无法区分链接和真实文件。
 
-**Q: 如何查看处理日志？**  
-A: 启用 `VERBOSE_LOGGING=true` 并设置 `LOG_FILE` 路径。
+**Q: NAS连接中断怎么办？**  
+A: 脚本会检测网络路径可用性，如果NAS不可访问会暂停操作并提示。
 
-## 🎯 项目背景
+## 🎯 适用场景
 
-本项目由 [DeepSeek](https://www.deepseek.com) AI 辅助开发，旨在自动化处理网易云音乐的NCM格式文件，提供便捷的音乐文件管理解决方案。
-
-**AI辅助开发说明：**
-- 脚本逻辑和架构由DeepSeek AI设计
-- 代码经过人工审核和优化
-- 支持批量处理和错误恢复机制
-- 提供完整的配置化和文档
+- 🏠 **家庭媒体中心**: 将音乐集中存储到NAS
+- 💾 **磁盘空间优化**: 本地只保留链接，节省空间
+- 🔄 **多设备同步**: NAS音乐库多设备共享
+- 🛡️ **数据安全**: 重要音乐文件NAS备份
 
 ## 📄 许可证
 
@@ -88,6 +128,6 @@ MIT License - 详见 LICENSE 文件
 
 <div align="center">
 
-**Powered by** [DeepSeek](https://www.deepseek.com) | **特殊感谢** ncmdump 项目
+**NAS音乐管理最佳实践** | **Powered by** [DeepSeek](https://www.deepseek.com)
 
 </div>

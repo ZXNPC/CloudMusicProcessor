@@ -1,12 +1,23 @@
 @echo off
 setlocal enabledelayedexpansion
 
+REM 获取脚本所在目录
+set "SCRIPT_DIR=%~dp0"
+cd /d "!SCRIPT_DIR!"
+
+echo 当前工作目录: %CD%
+echo 脚本所在目录: !SCRIPT_DIR!
+echo 检查配置文件: !SCRIPT_DIR!config.bat
+
 REM 加载配置文件
-if exist "config.bat" (
-    call "config.bat"
+if exist "!SCRIPT_DIR!config.bat" (
+    echo 找到配置文件，正在加载...
+    call "!SCRIPT_DIR!config.bat"
 ) else (
     echo 错误: 找不到配置文件 config.bat
-    echo 请从 config_example.bat 创建 config.bat 并配置路径
+    echo 请确保 config.bat 与脚本在同一目录下
+    echo 当前目录文件列表:
+    dir /b
     pause
     exit /b 1
 )
@@ -14,10 +25,12 @@ if exist "config.bat" (
 REM 验证必要路径
 if not exist "%NCMDump_PATH%" (
     echo 错误: 找不到 ncmdump.exe 在 %NCMDump_PATH%
-    echo 请下载 ncmdump 并更新 config.bat 中的路径
     pause
     exit /b 1
 )
+
+echo 配置加载成功，开始处理...
+echo.
 
 REM 步骤1：执行ncmdump转换
 echo [1/4] 正在转换ncm文件...
@@ -105,6 +118,4 @@ for %%f in ("%BACKUP_DIR%\*") do (
 
 echo.
 echo ? 所有操作完成！
-echo 转换后的文件位置: %SOURCE_DIR%
-echo 备份位置: %BACKUP_DIR%
 pause
